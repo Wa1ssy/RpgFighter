@@ -42,8 +42,28 @@ class Character:
             self.mana = 100
             self.skill = "Fireball"
 
-    def is_alive(self):
-        return self.hp > 0
+    def gain_xp(self, amount):
+        self.xp += amount
+        if self.xp >= self.level * 100:
+            self.level_up()
+
+    def level_up(self):
+        self.level += 1
+        self.max_hp += 20
+        self.hp = self.max_hp
+        self.attack += 3
+        self.mana += 20
+        print(r"""
+    ╔════════════════════════╗
+    ║ 🔼 UUS TASE SAAVUTATUD!║
+    ╚════════════════════════╝
+""")
+
+    # def is_alive(self):
+    #     return self.hp > 0
+    
+    def take_damage(self, dmg):
+        self.hp = max(0, self.hp - dmg)
 
 def create_character():
     print("Tere tulemast RPG Fighterisse!")
@@ -74,6 +94,9 @@ class Enemy:
 
     def is_alive(self):
         return self.hp > 0
+    
+    def take_damage(self, dmg):
+        self.hp = max(0, self.hp - dmg)
 
 # ⚔️ Lahingu funktsioon
 def fight(player, enemy):
@@ -82,17 +105,17 @@ def fight(player, enemy):
 ║     LAHING ALGAB! ⚔️    ║
 ╚══════════════════════════╝
 """)
-    while player.is_alive() and enemy.is_alive():
+    while enemy.is_alive(): #and player.is_alive()
         # Kuvatakse statistika
-        # print(f"\n{player.name} | HP: {player.hp}/{player.max_hp} | Mana: {player.mana} | Tase: {player.level} | XP: {player.xp}")
+        print(f"\n{player.name} | HP: {player.hp}/{player.max_hp} | Mana: {player.mana} | Tase: {player.level} | XP: {player.xp}")
         print(f"{enemy.name} | HP: {enemy.hp} | Strength: {enemy.attack}")
-        # print("\n1. Ründa\n2. Erirünnak\n3. Kasuta potionit\n4. Põgene")
+        print("\n1. Ründa\n4. Põgene")
         choice = input("> ")
 
-        # if choice == "1":
-        #     dmg = random.randint(5, player.attack)
-        #     enemy.take_damage(dmg)
-        #     slow(f"{player.name} ründab ja teeb {dmg} kahju!")
+        if choice == "1":
+            dmg = random.randint(5, player.attack)
+            enemy.take_damage(dmg)
+            slow(f"{player.name} ründab ja teeb {dmg} kahju!")
         # elif choice == "2":
         #     player.special_attack(enemy)
         # elif choice == "3":
@@ -102,21 +125,41 @@ def fight(player, enemy):
         #         player.heal()
         #     elif sub == "b":
         #         player.restore_mana()
-        # elif choice == "4":
-        #     if random.random() < 0.4:
-        #         slow("Põgenemine õnnestus!")
-        #         return False
-        #     else:
-        #         slow("Põgenemine ebaõnnestus!")
-        # else:
-        #     slow("Tundmatu käik.")
-        #     continue
+        elif choice == "4":
+            if random.random() < 0.4:
+                slow("Põgenemine õnnestus!")
+                return False
+            else:
+                slow("Põgenemine ebaõnnestus!")
+        else:
+            slow("Tundmatu käik.")
+            continue
 
-        # # Vaenlase vasturünnak
-        # if enemy.is_alive():
-        #     dmg = random.randint(4, enemy.attack)
-        #     player.take_damage(dmg)
-        #     slow(f"{enemy.name} ründab ja teeb {dmg} kahju!")
+        # Vaenlase vasturünnak
+        if enemy.is_alive():
+            dmg = random.randint(4, enemy.attack)
+            player.take_damage(dmg)
+            slow(f"{enemy.name} ründab ja teeb {dmg} kahju!")
+    # Lahingu tulemus
+    # if player.is_alive():
+    print(r"""
+╔════════════════════════╗
+║ 🎉 SA VÕITSID LAHINGU! ║
+╚════════════════════════╝
+""")
+    player.gain_xp(50)
+        # player.defeated += 1
+        # if random.random() < 0.5:
+        #     player.inventory.append("Potion")
+        #     slow("Sa leidsid potioni!")
+#         return True
+# #     else:
+# #         print(r"""
+# # ╔══════════════════╗
+# # ║    💀 MÄNG LÄBI  ║
+# # ╚══════════════════╝
+# # """)
+#         return False
 
             
 def main():
@@ -125,16 +168,16 @@ def main():
     enemy_count = 0
     max_enemies = 5
 
-    while player.is_alive() and enemy_count < max_enemies:
+    while True: #player.is_alive() enemy_count < max_enemies:
         show_menu()
         choice = input("> ")
 
         if choice == "1":
-            enemy_count += 1
+            enemy_count += 11
             enemy = Enemy(enemy_count)
             won = fight(player, enemy)
-            if not won and not player.is_alive():
-                break
+            # if not won and not player.is_alive():
+            #     break
         elif choice == "2":
             print(f"\n{player.name} | Klass: {player.cls}")
             print(f"Tase: {player.level} | XP: {player.xp} | HP: {player.hp}/{player.max_hp} | Mana: {player.mana}")
