@@ -42,17 +42,81 @@ class Character:
             self.mana = 100
             self.skill = "Fireball"
 
+    def is_alive(self):
+        return self.hp > 0
+
 def create_character():
     print("Tere tulemast RPG Fighterisse!")
     name = input("Sisesta oma nimi: ")
     print(r"""
 Vali oma klass:
-  1. 🛡️ Rüütel – tugev ja vastupidav
+  1. 🛡️  Rüütel – tugev ja vastupidav
   2. 🔮 Võlur – oskuslik ja maagiline
 """)
     cls_choice = input("> ")
     cls = "Rüütel" if cls_choice == "1" else "Võlur"
     return Character(name, cls)
+
+# 📋 Mängu menüü
+def show_menu():
+    print("\n--- PEAMENÜÜ ---")
+    print("1. Alusta lahingut")
+    # print("2. Näita tegelast")
+    print("3. Välju mängust")
+
+# 💀 Vastase klass
+class Enemy:
+    def __init__(self, number):
+        names = ["Zombi", "Ork", "Luukere", "Madu", "Tume Rüütel"]
+        self.name = random.choice(names) + f" #{number}"
+        self.hp = random.randint(50, 100)
+        self.attack = random.randint(6, 14)
+
+    def is_alive(self):
+        return self.hp > 0
+
+# ⚔️ Lahingu funktsioon
+def fight(player, enemy):
+    print(r"""
+╔══════════════════════════╗
+║     LAHING ALGAB! ⚔️    ║
+╚══════════════════════════╝
+""")
+    while player.is_alive() and enemy.is_alive():
+        # Kuvatakse statistika
+        # print(f"\n{player.name} | HP: {player.hp}/{player.max_hp} | Mana: {player.mana} | Tase: {player.level} | XP: {player.xp}")
+        print(f"{enemy.name} | HP: {enemy.hp} | Strength: {enemy.attack}")
+        # print("\n1. Ründa\n2. Erirünnak\n3. Kasuta potionit\n4. Põgene")
+        choice = input("> ")
+
+        # if choice == "1":
+        #     dmg = random.randint(5, player.attack)
+        #     enemy.take_damage(dmg)
+        #     slow(f"{player.name} ründab ja teeb {dmg} kahju!")
+        # elif choice == "2":
+        #     player.special_attack(enemy)
+        # elif choice == "3":
+        #     print("a) Potion\nb) Mana Potion")
+        #     sub = input("> ").lower()
+        #     if sub == "a":
+        #         player.heal()
+        #     elif sub == "b":
+        #         player.restore_mana()
+        # elif choice == "4":
+        #     if random.random() < 0.4:
+        #         slow("Põgenemine õnnestus!")
+        #         return False
+        #     else:
+        #         slow("Põgenemine ebaõnnestus!")
+        # else:
+        #     slow("Tundmatu käik.")
+        #     continue
+
+        # # Vaenlase vasturünnak
+        # if enemy.is_alive():
+        #     dmg = random.randint(4, enemy.attack)
+        #     player.take_damage(dmg)
+        #     slow(f"{enemy.name} ründab ja teeb {dmg} kahju!")
 
             
 def main():
