@@ -26,7 +26,7 @@ class Character:
         self.level = 1
         self.xp = 0
         self.defeated = 0
-        self.inventory = ["Potion", "Mana Potion"]
+        self.inventory = ["Health Potion", "Mana Potion"]
 
         if cls == "Rüütel":
             self.max_hp = 120
@@ -48,12 +48,12 @@ class Character:
         self.hp = max(0, self.hp - dmg)
 
     def heal(self):
-        if "Potion" in self.inventory:
+        if "Health Potion" in self.inventory:
             self.hp = min(self.max_hp, self.hp + 40)
-            self.inventory.remove("Potion")
-            slow(f"{self.name} kasutas Potionit ja paranes!")
+            self.inventory.remove("Health Potion")
+            slow(f"{self.name} kasutas Health Potionit ja paranes!")
         else:
-            slow("Pole potionit!")
+            slow("Pole health potionit!")
 
     def restore_mana(self):
         if "Mana Potion" in self.inventory:
@@ -126,7 +126,7 @@ def fight(player, enemy):
         elif choice == "2":
             player.special_attack(enemy)
         elif choice == "3":
-            print("a) Potion\nb) Mana Potion")
+            print("a) Health Potion\nb) Mana Potion")
             sub = input("> ").lower()
             if sub == "a":
                 player.heal()
@@ -156,7 +156,7 @@ def fight(player, enemy):
         player.gain_xp(50)
         player.defeated += 1
         if random.random() < 0.5:
-            player.inventory.append("Potion")
+            player.inventory.append("Health Potion")
             slow("Sa leidsid potioni!")
         return True
     else:
